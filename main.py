@@ -3,11 +3,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import os
-
+from pathlib import Path
 import database
 from scheduler import start_scheduler
 
 app = FastAPI(title="ToDo Telegram mini app")
+
+
+BASE_DIR = Path(__file__).resolve().parent
 
 @app.on_event("startup")
 def on_startup():
@@ -44,5 +47,5 @@ def complete_task(task_id: int):
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
-def serve_frontend():
-    return FileResponse("/status/index.html")
+async def serve_frontend():
+    return FileResponse(BASE_DIR / "static" / "index.html" )
